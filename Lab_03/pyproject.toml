@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stream-books-variant2"
+version = "1.0.0"
+description = "Laboratory work 3, variant 2"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+where = ["src"]
