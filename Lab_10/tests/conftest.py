@@ -1,4 +1,5 @@
-"""Shared pytest fixtures."""
+from collections.abc import Generator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -11,26 +12,21 @@ from book_catalog.database import Base, get_session
 
 
 @pytest.fixture
-def client() -> TestClient:
-    """Create an isolated in-memory database for an API test."""
+def client(tmp_path: Path) -> Generator[TestClient, None, None]:
+    database_url = f"sqlite:///{tmp_path / 'test.db'}"
     test_engine = create_engine(
-        "sqlite://",
+        database_url,
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    TestingSessionLocal = sessionmaker(
-        bind=test_engine, autoflush=False, autocommit=False
-    )
+    TestingSession = sessionmaker(bind=test_engine, autoflush=False, expire_on_commit=False)
     Base.metadata.create_all(bind=test_engine)
 
-    def override_get_session():
-        session: Session = TestingSessionLocal()
-        try:
+    def override_session() -> Generator[Session, None, None]:
+        with TestingSession() as session:
             yield session
-        finally:
-            session.close()
 
-    app.dependency_overrides[get_session] = override_get_session
+    app.dependency_overrides[get_session] = override_session
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()

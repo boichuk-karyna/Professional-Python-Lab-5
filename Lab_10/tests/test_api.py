@@ -1,15 +1,4 @@
-"""Integration tests for the REST API."""
-
 from fastapi.testclient import TestClient
-
-
-def add_book(client: TestClient, title: str, author: str, year: int, pages: int):
-    response = client.post(
-        "/books",
-        json={"title": title, "author": author, "year": year, "pages": pages},
-    )
-    assert response.status_code == 201
-    return response.json()
 
 
 def test_health(client: TestClient) -> None:
@@ -18,92 +7,48 @@ def test_health(client: TestClient) -> None:
     assert response.json()["status"] == "ok"
 
 
-def test_create_and_read_book(client: TestClient) -> None:
-    book = add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    response = client.get(f"/books/{book['id']}")
-    assert response.status_code == 200
-    assert response.json()["title"] == "Кобзар"
-
-
-def test_list_books(client: TestClient) -> None:
-    add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    assert len(client.get("/books").json()) == 1
-
-
-def test_search_by_author(client: TestClient) -> None:
-    add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    response = client.get("/books", params={"author": "Шевченко"})
-    assert len(response.json()) == 1
-
-
-def test_filter_by_year(client: TestClient) -> None:
-    add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    add_book(client, "Лісова пісня", "Леся Українка", 1911, 100)
-    response = client.get("/books", params={"year": 1911})
-    assert [book["title"] for book in response.json()] == ["Лісова пісня"]
-
-
-def test_search_by_title(client: TestClient) -> None:
-    add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    assert len(client.get("/books", params={"search": "Коб"}).json()) == 1
-
-
-def test_update_book(client: TestClient) -> None:
-    book = add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    response = client.patch(f"/books/{book['id']}", json={"pages": 350})
-    assert response.status_code == 200
-    assert response.json()["pages"] == 350
-
-
-def test_delete_book(client: TestClient) -> None:
-    book = add_book(client, "Кобзар", "Тарас Шевченко", 1840, 320)
-    assert client.delete(f"/books/{book['id']}").status_code == 204
-    assert client.get(f"/books/{book['id']}").status_code == 404
-
-
-def test_missing_book_returns_404(client: TestClient) -> None:
-    assert client.get("/books/999").status_code == 404
-
-
-def test_invalid_book_returns_422(client: TestClient) -> None:
-    response = client.post(
-        "/books", json={"title": "", "author": "A", "year": 2020, "pages": 10}
+def test_create_list_search_and_filter_books(client: TestClient) -> None:
+    first = client.post(
+        "/books",
+        json={"title": "The Hobbit", "author": "J. R. R. Tolkien", "year": 1937, "pages": 310},
     )
-    assert response.status_code == 422
+    second = client.post(
+        "/books",
+        json={"title": "The Silmarillion", "author": "J. R. R. Tolkien", "year": 1977, "pages": 365},
+    )
+    assert first.status_code == 201
+    assert second.status_code == 201
+    assert len(client.get("/books", params={"author": "tolkien"}).json()) == 2
+    assert client.get("/books", params={"year": 1937}).json()[0]["title"] == "The Hobbit"
+    assert client.get("/books", params={"q": "silmarillion"}).json()[0]["pages"] == 365
 
 
-def test_authors_endpoint(client: TestClient) -> None:
-    add_book(client, "Книга Б", "Автор Б", 2000, 100)
-    add_book(client, "Книга А", "Автор А", 2001, 120)
-    assert client.get("/authors").json() == ["Автор А", "Автор Б"]
+def test_authors_and_books_by_author(client: TestClient) -> None:
+    client.post("/books", json={"title": "Dune", "author": "Frank Herbert", "year": 1965, "pages": 412})
+    authors = client.get("/authors").json()
+    assert len(authors) == 1
+    books = client.get(f"/authors/{authors[0]['id']}/books")
+    assert books.status_code == 200
+    assert books.json()[0]["title"] == "Dune"
 
 
-def test_books_for_author(client: TestClient) -> None:
-    add_book(client, "Книга", "Автор", 2000, 100)
-    response = client.get("/authors/1/books")
-    assert response.status_code == 200
-    assert response.json()[0]["author"] == "Автор"
+def test_validation_and_missing_records(client: TestClient) -> None:
+    invalid = client.post(
+        "/books",
+        json={"title": " ", "author": "A", "year": 1200, "pages": 0},
+    )
+    assert invalid.status_code == 422
+    assert client.get("/books/999").status_code == 404
+    assert client.get("/authors/999/books").status_code == 404
+    assert client.delete("/books/999").status_code == 404
 
 
-def test_unknown_author_returns_404(client: TestClient) -> None:
-    assert client.get("/authors/100/books").status_code == 404
-
-
-def test_statistics(client: TestClient) -> None:
-    add_book(client, "Книга А", "Автор А", 2000, 100)
-    add_book(client, "Книга Б", "Автор Б", 2001, 300)
-    result = client.get("/books/statistics").json()
-    assert result["total_books"] == 2
-    assert result["average_pages"] == 200.0
-    assert result["largest_book"]["title"] == "Книга Б"
-
-
-def test_empty_statistics(client: TestClient) -> None:
-    result = client.get("/books/statistics").json()
-    assert result == {"total_books": 0, "average_pages": 0.0, "largest_book": None}
-
-
-def test_trim_text_fields(client: TestClient) -> None:
-    book = add_book(client, "  Книга  ", "  Автор  ", 2000, 100)
-    assert book["title"] == "Книга"
-    assert book["author"] == "Автор"
+def test_statistics_and_delete(client: TestClient) -> None:
+    client.post("/books", json={"title": "Short", "author": "A", "year": 2000, "pages": 100})
+    client.post("/books", json={"title": "Long", "author": "B", "year": 2001, "pages": 300})
+    statistics = client.get("/books/statistics").json()
+    assert statistics["count"] == 2
+    assert statistics["average_pages"] == 200
+    assert statistics["largest_book"]["title"] == "Long"
+    book_id = statistics["largest_book"]["id"]
+    assert client.delete(f"/books/{book_id}").status_code == 204

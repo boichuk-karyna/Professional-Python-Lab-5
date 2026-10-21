@@ -1,18 +1,15 @@
-"""FastAPI routes for the book catalog."""
-
 import logging
 from contextlib import asynccontextmanager
-from collections.abc import AsyncIterator
+from typing import Annotated
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Response, status
 from sqlalchemy.orm import Session
 
 from book_catalog.config import get_settings
-from book_catalog.database import create_db_and_tables, get_session
-from book_catalog.models import Book
+from book_catalog.database import Base, engine, get_session
+from book_catalog.models import Author, Book
 from book_catalog.repositories import BookRepository
-from book_catalog.schemas import BookCreate, BookRead, BookUpdate, CatalogStatistics
-from book_catalog.services import BookService
+from book_catalog.schemas import AuthorCreate, AuthorRead, BookCreate, BookRead, BookStatistics
 
 settings = get_settings()
 logging.basicConfig(
@@ -23,103 +20,100 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    """Initialize persistent storage when the application starts."""
-    create_db_and_tables()
-    logger.info("Book Catalog API started in %s environment", settings.environment)
+async def lifespan(_: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    logger.info("Book Catalog started in %s environment", settings.environment)
     yield
 
 
-app = FastAPI(
-    title=settings.app_name,
-    description="API для додавання, пошуку та аналізу каталогу книг.",
-    version="1.0.0",
-    lifespan=lifespan,
-)
+app = FastAPI(title=settings.app_name, version="1.0.0", lifespan=lifespan)
 
 
-def get_book_or_404(book_id: int, session: Session) -> Book:
-    """Return a book or raise a standard 404 response."""
-    book = BookRepository(session).get(book_id)
-    if book is None:
-        raise HTTPException(status_code=404, detail="Книгу не знайдено.")
-    return book
+def repository(session: Annotated[Session, Depends(get_session)]) -> BookRepository:
+    return BookRepository(session)
 
 
-@app.get("/health", tags=["System"])
+@app.get("/health", tags=["health"])
 def health() -> dict[str, str]:
-    """Return application health and environment."""
     return {"status": "ok", "environment": settings.environment}
 
 
-@app.post("/books", response_model=BookRead, status_code=status.HTTP_201_CREATED, tags=["Books"])
-def create_book(
-    data: BookCreate, session: Session = Depends(get_session)
-) -> Book:
-    """Create a book record."""
-    try:
-        return BookService(BookRepository(session)).create_book(data)
-    except ValueError as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
-
-
-@app.get("/books", response_model=list[BookRead], tags=["Books"])
+@app.get("/books", response_model=list[BookRead], tags=["books"])
 def list_books(
-    author: str | None = Query(default=None, description="Фільтр за автором"),
-    year: int | None = Query(default=None, ge=0, description="Фільтр за роком"),
-    search: str | None = Query(default=None, description="Пошук у назві"),
-    session: Session = Depends(get_session),
+    repo: Annotated[BookRepository, Depends(repository)],
+    author: str | None = None,
+    year: Annotated[int | None, Query(ge=1450, le=2100)] = None,
+    q: str | None = None,
 ) -> list[Book]:
-    """List books and apply optional filters."""
-    return BookRepository(session).list_books(author=author, year=year, search=search)
+    return repo.list_books(author=author, year=year, query=q)
 
 
-@app.get("/books/statistics", response_model=CatalogStatistics, tags=["Books"])
-def statistics(session: Session = Depends(get_session)) -> CatalogStatistics:
-    """Return total books, average pages and the largest book."""
-    return BookService(BookRepository(session)).statistics()
-
-
-@app.get("/books/{book_id}", response_model=BookRead, tags=["Books"])
-def read_book(book_id: int, session: Session = Depends(get_session)) -> Book:
-    """Get one book by identifier."""
-    return get_book_or_404(book_id, session)
-
-
-@app.patch("/books/{book_id}", response_model=BookRead, tags=["Books"])
-def update_book(
-    book_id: int,
-    data: BookUpdate,
-    session: Session = Depends(get_session),
+@app.post("/books", response_model=BookRead, status_code=status.HTTP_201_CREATED, tags=["books"])
+def create_book(
+    payload: BookCreate,
+    repo: Annotated[BookRepository, Depends(repository)],
 ) -> Book:
-    """Update a book."""
-    book = get_book_or_404(book_id, session)
     try:
-        return BookService(BookRepository(session)).update_book(book, data)
-    except ValueError as error:
-        raise HTTPException(status_code=422, detail=str(error)) from error
+        return repo.create_book(
+            title=payload.title,
+            author_name=payload.author,
+            year=payload.year,
+            pages=payload.pages,
+            description=payload.description,
+        )
+    except Exception:
+        logger.exception("Could not create book")
+        raise HTTPException(status_code=500, detail="Could not create book") from None
 
 
-@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Books"])
-def delete_book(book_id: int, session: Session = Depends(get_session)) -> Response:
-    """Delete a book."""
-    repository = BookRepository(session)
-    repository.delete(get_book_or_404(book_id, session))
+@app.get("/books/statistics", response_model=BookStatistics, tags=["books"])
+def book_statistics(repo: Annotated[BookRepository, Depends(repository)]) -> dict[str, object]:
+    count, average, largest = repo.statistics()
+    return {"count": count, "average_pages": average, "largest_book": largest}
+
+
+@app.get("/books/{book_id}", response_model=BookRead, tags=["books"])
+def get_book(book_id: int, repo: Annotated[BookRepository, Depends(repository)]) -> Book:
+    book = repo.get_book(book_id)
+    if book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return book
+
+
+@app.delete("/books/{book_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["books"])
+def delete_book(book_id: int, repo: Annotated[BookRepository, Depends(repository)]) -> Response:
+    if not repo.delete_book(book_id):
+        raise HTTPException(status_code=404, detail="Book not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.get("/authors", response_model=list[str], tags=["Authors"])
-def list_authors(session: Session = Depends(get_session)) -> list[str]:
-    """List distinct authors alphabetically."""
-    return BookRepository(session).authors()
+@app.get("/authors", response_model=list[AuthorRead], tags=["authors"])
+def list_authors(repo: Annotated[BookRepository, Depends(repository)]) -> list[Author]:
+    return repo.list_authors()
 
 
-@app.get("/authors/{author_id}/books", response_model=list[BookRead], tags=["Authors"])
-def list_author_books(
-    author_id: int, session: Session = Depends(get_session)
+@app.post("/authors", response_model=AuthorRead, status_code=status.HTTP_201_CREATED, tags=["authors"])
+def create_author(
+    payload: AuthorCreate,
+    session: Annotated[Session, Depends(get_session)],
+) -> Author:
+    from sqlalchemy import select
+
+    existing = session.scalars(select(Author).where(Author.name.ilike(payload.name))).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="Author already exists")
+    author = Author(name=payload.name)
+    session.add(author)
+    session.commit()
+    session.refresh(author)
+    return author
+
+
+@app.get("/authors/{author_id}/books", response_model=list[BookRead], tags=["authors"])
+def author_books(
+    author_id: int,
+    repo: Annotated[BookRepository, Depends(repository)],
 ) -> list[Book]:
-    """List books for an author using their one-based ID in the sorted author list."""
-    books = BookRepository(session).author_books(author_id)
-    if books is None:
-        raise HTTPException(status_code=404, detail="Автора не знайдено.")
-    return books
+    if repo.get_author(author_id) is None:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return repo.books_by_author(author_id)
