@@ -1,0 +1,6 @@
+experiment,data_size,workers,mean_time_s,current_memory_mb,peak_memory_mb,speedup_vs_group_baseline
+Python baseline,100000,1,0.011534,0.000,0.764,1.000
+NumPy vectorized,100000,1,0.004026,0.001,1.590,2.865
+Sequential CPU,100000,1,0.275564,0.623,0.623,1.000
+ThreadPoolExecutor CPU,100000,4,0.511569,0.722,35.579,0.539
+ProcessPoolExecutor CPU,100000,4,0.260286,0.711,1.514,1.059
