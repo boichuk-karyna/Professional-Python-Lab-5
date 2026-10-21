@@ -1,0 +1,1 @@
+"""Book catalog persistence package."""
