@@ -1,0 +1,138 @@
+PYTEST EXIT CODE: 0
+
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.13.5, pytest-9.0.2, pluggy-1.6.0 -- /opt/pyvenv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.13.5', 'Platform': 'Linux-6.18.55-x86_64-with-glibc2.41', 'Packages': {'pytest': '9.0.2', 'pluggy': '1.6.0'}, 'Plugins': {'anyio': '4.13.0', 'ddtrace': '4.4.0', 'Faker': '40.1.2', 'asyncio': '1.3.0', 'cov': '7.0.0', 'json-report': '1.5.0', 'metadata': '3.1.1'}, 'PLATFORM': 'linux/amd64', 'CI': 'true'}
+rootdir: /mnt/data/Lab_07_Variant_2_Books
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.13.0, ddtrace-4.4.0, Faker-40.1.2, asyncio-1.3.0, cov-7.0.0, json-report-1.5.0, metadata-3.1.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+[1mcollecting ... [0mcollected 19 items
+
+tests/test_persistence.py::test_create_author_and_book [32mPASSED[0m[32m            [  5%][0m
+tests/test_persistence.py::test_read_author_and_book [32mPASSED[0m[32m              [ 10%][0m
+tests/test_persistence.py::test_get_all_authors_and_books [32mPASSED[0m[32m         [ 15%][0m
+tests/test_persistence.py::test_update_author [32mPASSED[0m[32m                     [ 21%][0m
+tests/test_persistence.py::test_update_book [32mPASSED[0m[32m                       [ 26%][0m
+tests/test_persistence.py::test_delete_book [32mPASSED[0m[32m                       [ 31%][0m
+tests/test_persistence.py::test_delete_author_cascades_books [32mPASSED[0m[32m      [ 36%][0m
+tests/test_persistence.py::test_relationship_author_books [32mPASSED[0m[32m         [ 42%][0m
+tests/test_persistence.py::test_find_by_author [32mPASSED[0m[32m                    [ 47%][0m
+tests/test_persistence.py::test_filter_by_year [32mPASSED[0m[32m                    [ 52%][0m
+tests/test_persistence.py::test_largest_book [32mPASSED[0m[32m                      [ 57%][0m
+tests/test_persistence.py::test_average_pages [32mPASSED[0m[32m                     [ 63%][0m
+tests/test_persistence.py::test_isbn_unique_constraint [32mPASSED[0m[32m            [ 68%][0m
+tests/test_persistence.py::test_invalid_pages_constraint [32mPASSED[0m[32m          [ 73%][0m
+tests/test_persistence.py::test_transaction_add_author_and_books [32mPASSED[0m[32m  [ 78%][0m
+tests/test_persistence.py::test_transaction_rollback_when_one_book_invalid [32mPASSED[0m[32m [ 84%][0m
+tests/test_persistence.py::test_crud_missing_ids [32mPASSED[0m[32m                  [ 89%][0m
+tests/test_persistence.py::test_count_empty_and_nonempty [32mPASSED[0m[32m          [ 94%][0m
+tests/test_persistence.py::test_db_api_parameterized_query [32mPASSED[0m[32m        [100%][0m
+
+[32m============================== [32m[1m19 passed[0m[32m in 0.22s[0m[32m ==============================[0m
+
+Spreadsheet runtime warmup failed during python startup
+Traceback (most recent call last):
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/patches/warm_spreadsheet_runtime_on_startup.py", line 26, in warm_spreadsheet_runtime_on_startup
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 785, in warm_spreadsheet_runtime
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 718, in _warm_feature_flows
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 509, in _warm_drawing_and_image_flows
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/generated/interface/models.py", line 32861, in bring_to_front
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/rpc/remote.py", line 764, in __call__
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/rpc/client.py", line 175, in call
+artifact_tool.rpc.client.RemoteError: Element ordering requires an owning element collection.
+
+
+ALEMBIC UPGRADE EXIT CODE: 1
+
+Spreadsheet runtime warmup failed during python startup
+Traceback (most recent call last):
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/patches/warm_spreadsheet_runtime_on_startup.py", line 26, in warm_spreadsheet_runtime_on_startup
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 785, in warm_spreadsheet_runtime
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 718, in _warm_feature_flows
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/spreadsheet_warmup.py", line 509, in _warm_drawing_and_image_flows
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/generated/interface/models.py", line 32861, in bring_to_front
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/rpc/remote.py", line 764, in __call__
+  File "/tmp/tmp.QlpUkOUI9D/artifact_tool_v2-2.8.66/artifact_tool/rpc/client.py", line 175, in call
+artifact_tool.rpc.client.RemoteError: Element ordering requires an owning element collection.
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001_authors_books, Create authors and books tables (before ISBN).
+INFO  [alembic.runtime.migration] Running upgrade  -> 0001_authors_books, Create authors and books tables (before ISBN).
+INFO  [alembic.runtime.migration] Running upgrade 0001_authors_books -> 0002_add_isbn, Add ISBN to books.
+INFO  [alembic.runtime.migration] Running upgrade 0001_authors_books -> 0002_add_isbn, Add ISBN to books.
+Traceback (most recent call last):
+  File [35m"<frozen runpy>"[0m, line [35m198[0m, in [35m_run_module_as_main[0m
+  File [35m"<frozen runpy>"[0m, line [35m88[0m, in [35m_run_code[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/__main__.py"[0m, line [35m4[0m, in [35m<module>[0m
+    [31mmain[0m[1;31m(prog="alembic")[0m
+    [31m~~~~[0m[1;31m^^^^^^^^^^^^^^^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/config.py"[0m, line [35m1047[0m, in [35mmain[0m
+    [31mCommandLine(prog=prog).main[0m[1;31m(argv=argv)[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/config.py"[0m, line [35m1037[0m, in [35mmain[0m
+    [31mself.run_cmd[0m[1;31m(cfg, options)[0m
+    [31m~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/config.py"[0m, line [35m971[0m, in [35mrun_cmd[0m
+    [31mfn[0m[1;31m([0m
+    [31m~~[0m[1;31m^[0m
+        [1;31mconfig,[0m
+        [1;31m^^^^^^^[0m
+        [1;31m*[getattr(options, k, None) for k in positional],[0m
+        [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+        [1;31m**{k: getattr(options, k, None) for k in kwarg},[0m
+        [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/command.py"[0m, line [35m483[0m, in [35mupgrade[0m
+    [31mscript.run_env[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/script/base.py"[0m, line [35m545[0m, in [35mrun_env[0m
+    [31mutil.load_python_file[0m[1;31m(self.dir, "env.py")[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/util/pyfiles.py"[0m, line [35m116[0m, in [35mload_python_file[0m
+    module = load_module_py(module_id, path)
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/util/pyfiles.py"[0m, line [35m136[0m, in [35mload_module_py[0m
+    [31mspec.loader.exec_module[0m[1;31m(module)[0m  # type: ignore
+    [31m~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^[0m
+  File [35m"<frozen importlib._bootstrap_external>"[0m, line [35m1026[0m, in [35mexec_module[0m
+  File [35m"<frozen importlib._bootstrap>"[0m, line [35m488[0m, in [35m_call_with_frames_removed[0m
+  File [35m"/mnt/data/Lab_07_Variant_2_Books/migrations/env.py"[0m, line [35m35[0m, in [35m<module>[0m
+    [31mrun_migrations_online[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/mnt/data/Lab_07_Variant_2_Books/migrations/env.py"[0m, line [35m29[0m, in [35mrun_migrations_online[0m
+    [31mcontext.run_migrations[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"<string>"[0m, line [35m8[0m, in [35mrun_migrations[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/runtime/environment.py"[0m, line [35m969[0m, in [35mrun_migrations[0m
+    [31mself.get_context().run_migrations[0m[1;31m(**kw)[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/runtime/migration.py"[0m, line [35m626[0m, in [35mrun_migrations[0m
+    [31mstep.migration_fn[0m[1;31m(**kw)[0m
+    [31m~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^[0m
+  File [35m"/mnt/data/Lab_07_Variant_2_Books/migrations/versions/0002_add_isbn_to_books.py"[0m, line [35m13[0m, in [35mupgrade[0m
+    [31mop.create_unique_constraint[0m[1;31m("uq_books_isbn", "books", ["isbn"])[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  File [35m"<string>"[0m, line [35m8[0m, in [35mcreate_unique_constraint[0m
+  File [35m"<string>"[0m, line [35m3[0m, in [35mcreate_unique_constraint[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/operations/ops.py"[0m, line [35m497[0m, in [35mcreate_unique_constraint[0m
+    return [31moperations.invoke[0m[1;31m(op)[0m
+           [31m~~~~~~~~~~~~~~~~~[0m[1;31m^^^^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/operations/base.py"[0m, line [35m452[0m, in [35minvoke[0m
+    return fn(self, operation)
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/operations/toimpl.py"[0m, line [35m221[0m, in [35mcreate_constraint[0m
+    [31moperations.impl.add_constraint[0m[1;31m([0m
+    [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31moperation.to_constraint(operations.migration_context)[0m
+        [1;31m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/opt/pyvenv/lib/python3.13/site-packages/alembic/ddl/sqlite.py"[0m, line [35m81[0m, in [35madd_constraint[0m
+    raise NotImplementedError(
+    ...<3 lines>...
+    )
+[1;35mNotImplementedError[0m: [35mNo support for ALTER of constraints in SQLite dialect. Please refer to the batch mode feature which allows for SQLite migrations using a copy-and-move strategy.[0m
