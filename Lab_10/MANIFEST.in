@@ -1,0 +1,11 @@
+include README.md
+include LICENSE
+include Dockerfile
+include .dockerignore
+include .env.example
+include pyproject.toml
+recursive-include src *.py
+recursive-include tests *.py
+recursive-include benchmarks *.py
+recursive-include docs *.md
+recursive-include .github/workflows *.yml
