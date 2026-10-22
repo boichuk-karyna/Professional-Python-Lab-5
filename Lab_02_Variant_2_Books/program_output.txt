@@ -1,0 +1,64 @@
+Book fields (tuple): ('id', 'title', 'author', 'year', 'pages')
+
+All books
+-------------------------------------------------------------------------------------
+ 1 | Clean Code                   | Robert C. Martin     | 2008 |  464
+ 2 | The Pragmatic Programmer     | Andrew Hunt          | 2019 |  352
+ 3 | Python Crash Course          | Eric Matthes         | 2023 |  552
+ 4 | Fluent Python                | Luciano Ramalho      | 2022 | 1014
+ 5 | Effective Python             | Brett Slatkin        | 2019 |  466
+ 6 | Clean Architecture           | Robert C. Martin     | 2017 |  432
+
+Unique authors (set): {'Brett Slatkin', 'Luciano Ramalho', 'Eric Matthes', 'Andrew Hunt', 'Robert C. Martin'}
+
+Titles (list comprehension): ['Clean Code', 'The Pragmatic Programmer', 'Python Crash Course', 'Fluent Python', 'Effective Python', 'Clean Architecture']
+
+Grouped by author (defaultdict -> dict):
+Robert C. Martin -> 2
+Andrew Hunt -> 1
+Eric Matthes -> 1
+Luciano Ramalho -> 1
+Brett Slatkin -> 1
+
+Counter by author: Counter({'Robert C. Martin': 2, 'Andrew Hunt': 1, 'Eric Matthes': 1, 'Luciano Ramalho': 1, 'Brett Slatkin': 1})
+
+Search by dict index, id=4: {'id': 4, 'title': 'Fluent Python', 'author': 'Luciano Ramalho', 'year': 2022, 'pages': 1014}
+Search by title: {'id': 1, 'title': 'Clean Code', 'author': 'Robert C. Martin', 'year': 2008, 'pages': 464}
+
+Books from 2020
+-------------------------------------------------------------------------------------
+ 3 | Python Crash Course          | Eric Matthes         | 2023 |  552
+ 4 | Fluent Python                | Luciano Ramalho      | 2022 | 1014
+
+Largest book: {'id': 4, 'title': 'Fluent Python', 'author': 'Luciano Ramalho', 'year': 2022, 'pages': 1014}
+average_pages: 0.00000210 s
+Average pages: 546.67
+
+Sorted by year
+-------------------------------------------------------------------------------------
+ 1 | Clean Code                   | Robert C. Martin     | 2008 |  464
+ 6 | Clean Architecture           | Robert C. Martin     | 2017 |  432
+ 5 | Effective Python             | Brett Slatkin        | 2019 |  466
+ 2 | The Pragmatic Programmer     | Andrew Hunt          | 2019 |  352
+ 4 | Fluent Python                | Luciano Ramalho      | 2022 | 1014
+ 3 | Python Crash Course          | Eric Matthes         | 2023 |  552
+
+Page statistics tuple (min, max, avg): (352, 1014, 546.6666666666666)
+Average via *args: 250.0
+Created via **kwargs: {'id': 7, 'title': 'Architecture Patterns with Python', 'author': 'Harry Percival', 'year': 2020, 'pages': 304}
+Recent operations (deque): ['group', 'search', 'filter', 'sort', 'report']
+
+Benchmark:
+{'records': 1000, 'list_search': 2.3114000001100976e-05, 'dict_build': 4.1832000000852076e-05, 'dict_search': 3.7099999872225453e-07}
+{'records': 10000, 'list_search': 0.0005197700000039163, 'dict_build': 0.000877479999999764, 'dict_search': 1.642999997386596e-06}
+{'records': 100000, 'list_search': 0.00547502199999883, 'dict_build': 0.010378476999996167, 'dict_search': 3.0739999985485156e-06}
+Spreadsheet runtime warmup failed during python startup
+Traceback (most recent call last):
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/patches/warm_spreadsheet_runtime_on_startup.py", line 26, in warm_spreadsheet_runtime_on_startup
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/spreadsheet_warmup.py", line 785, in warm_spreadsheet_runtime
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/spreadsheet_warmup.py", line 720, in _warm_feature_flows
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/spreadsheet_warmup.py", line 704, in _warm_collaboration_flows
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/generated/interface/models.py", line 32317, in hydrate_crdt_from_proto
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/rpc/remote.py", line 749, in __call__
+  File "/tmp/tmp.L2TH2Y5coc/artifact_tool_v2-2.8.22/artifact_tool/rpc/client.py", line 150, in call
+artifact_tool.rpc.client.RemoteError: hydrateCrdtFromProto requires an empty collaborative document.

@@ -1,0 +1,22 @@
+schema_version: 1
+
+input:
+  path: data/books.csv
+  format: csv
+
+output:
+  path: output/books.json
+  format: json
+  backup: true
+
+processing:
+  min_year: 1000
+  max_year: 2026
+  skip_invalid: true
+  error_report: output/errors.csv
+
+logging:
+  level: INFO
+  path: logs/application.log
+  max_bytes: 1048576
+  backup_count: 3

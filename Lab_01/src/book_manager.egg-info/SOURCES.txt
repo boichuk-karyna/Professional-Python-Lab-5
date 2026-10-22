@@ -1,0 +1,12 @@
+README.md
+pyproject.toml
+src/book_manager/__init__.py
+src/book_manager/main.py
+src/book_manager/models.py
+src/book_manager/services.py
+src/book_manager.egg-info/PKG-INFO
+src/book_manager.egg-info/SOURCES.txt
+src/book_manager.egg-info/dependency_links.txt
+src/book_manager.egg-info/entry_points.txt
+src/book_manager.egg-info/top_level.txt
+tests/test_services.py

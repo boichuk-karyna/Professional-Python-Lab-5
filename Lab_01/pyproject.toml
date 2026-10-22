@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "book-manager"
+version = "0.1.0"
+description = "Book management laboratory project"
+requires-python = ">=3.11"
+
+[project.scripts]
+book-manager = "book_manager.main:main"
